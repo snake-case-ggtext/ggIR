@@ -64,6 +64,35 @@ ggir.parse(
 |---|---|---|
 | `**bold**`, `*italic*`, `~~strike~~`, `` `code` ``, `[link](url)`, `![alt](src)` | `<b>` `<strong>` `<i>` `<em>` `<u>` `<ins>` `<s>` `<del>` `<strike>` `<sup>` `<sub>` `<br>` `<p>` `<div>` `<span>` `<font>` `<code>` `<kbd>` `<tt>` `<samp>` `<small>` `<big>` `<mark>` `<a>` `<img>` | `color`, `background(-color)`, `font-size`, `font-family`, `font-weight`, `font-style`, `font-variant`, `text-decoration`, `vertical-align` |
 
+## Resolving
+
+`ggir.resolve` turns the tree into the flat list of styled runs a renderer
+lays out: `TextRun`, `ImageRun` and `LINE_BREAK`, each with a concrete
+`ggir.Style` (sizes and baseline shifts in points). ggIR makes the
+resolving decisions (em sizes, nesting, paragraph breaks, merging runs);
+the renderer supplies only its numbers, in a `Policy`.
+
+```python
+toks = ggir.resolve(
+    ggir.parse("x<sup>2</sup> in <span style='color:red'>red</span>"),
+    ggir.Style(size=12),
+    policy=ggir.Policy(script_scale=0.7, sup_shift=0.4, sub_shift=-0.2, default_em=10),
+    validate_color=None,  # or a callable: colour -> normalised colour / None
+)
+ggir.plain_text(toks)  # 'x2 in red'
+```
+
+- Styles are derived from `base` with `dataclasses.replace`, so a
+  renderer's `Style` subclass (ggtext adds matplotlib `FontProperties`)
+  is kept.
+- ggIR validates no colours. With `validate_color`, an invalid text colour
+  warns once and is ignored.
+- Tags outside `ggir.KNOWN_TAGS` warn once (parse with
+  `on_unknown="ignore"` to avoid a second warning from the parser).
+- A renderer that does not shift scripts by a fixed fraction of the em
+  (R's gridtext uses 0.8x size and half the ascent) subclasses `Policy`
+  and overrides `Policy.script`.
+
 ## Install
 
 ```bash
@@ -74,7 +103,8 @@ pip install git+https://github.com/snake-case-ggtext/ggIR
 
 v0.1 also contained a matplotlib renderer (a port of R's gridtext layout
 engine) for plotnine-ggtext. It is kept at the `v0.1.0` tag. From v0.2,
-ggIR is only the parsing layer, and rendering lives in ggtext.
+ggIR is only the parsing layer, and rendering lives in ggtext. v0.3 adds
+`resolve`, moved from ggtext's adapter, so other renderers can share it.
 
 ## License
 

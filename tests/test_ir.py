@@ -45,9 +45,12 @@ def plain(s, **kwargs):
 
 def test_ir_does_not_need_matplotlib():
     code = (
-        "import sys, ggir.ir; "
-        "ggir.ir.parse(\"**x** <span style='color:red;font-size:2em'>y</span> $z$\"); "
-        "print('ggir.css' in sys.modules, 'matplotlib' in sys.modules)"
+        "import sys, ggir; "
+        "doc = ggir.parse(\"**x**<sup>2</sup> <span style='color:red;font-size:2em'>y</span> $z$\"); "
+        "toks = ggir.resolve(doc, ggir.Style(size=10)); "
+        "ggir.Style().update(family='a, b'); ggir.plain_text(toks); "
+        "mods = ('ggir.css', 'ggir.ir', 'ggir.style', 'ggir.resolve'); "
+        "print(all(m in sys.modules for m in mods), 'matplotlib' in sys.modules)"
     )
     out = subprocess.run([sys.executable, "-c", code], capture_output=True, text=True)
     assert out.returncode == 0, out.stderr

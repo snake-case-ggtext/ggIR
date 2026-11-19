@@ -57,6 +57,7 @@ __all__ = (
     "Node",
     "Color",
     "UnsupportedTagError",
+    "KNOWN_TAGS",
     "parse",
 )
 
@@ -310,11 +311,12 @@ _BLOCK_SEP_RE = re.compile(r"\n\s*\n")
 
 _VOID_TAGS = {"br", "img", "hr", "wbr"}
 _BLOCK_TAGS = {"p", "div"}
-_KNOWN_TAGS = {
+KNOWN_TAGS = frozenset({
     "b", "strong", "i", "em", "u", "ins", "s", "del", "strike", "sup", "sub",
     "br", "span", "font", "code", "kbd", "tt", "samp", "small", "big",
     "mark", "a", "p", "div", "img", "wbr", "hr",
-}  # fmt: skip
+})  # fmt: skip
+"""Every tag the parser understands; others become plain `Span`s"""
 _MONOSPACE = ("monospace",)
 _PARAGRAPH_FIELDS = {f.name for f in fields(Paragraph)}
 
@@ -495,7 +497,7 @@ class _Builder:
                 f["family"] = split_families(attrs["face"])
             if "size" in attrs and (size := parse_length(attrs["size"])) is not None:
                 f["size"] = size
-        elif name not in _KNOWN_TAGS:
+        elif name not in KNOWN_TAGS:
             msg = f"ggir: the HTML tag <{name}> isn't supported"
             if self.on_unknown == "error":
                 raise UnsupportedTagError(msg)
