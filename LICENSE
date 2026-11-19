@@ -1,8 +1,8 @@
 MIT License
 
 Copyright (c) 2026 Tyler Riccio
-Copyright (c) 2019-2020 Claus O. Wilke (gridtext, from which the layout
-engine is ported)
+Copyright (c) 2026 Shannon E. Ellis (ggtext for Python, from which the
+parser is adapted)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
