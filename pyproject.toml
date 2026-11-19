@@ -1,0 +1,32 @@
+[project]
+name = "ggir"
+version = "0.1.0"
+description = "Rich text for matplotlib: a markdown/HTML intermediate representation and box layout engine (a port of R's gridtext)"
+readme = "README.md"
+authors = [
+    { name = "Tyler Riccio", email = "tylerriccio8@gmail.com" }
+]
+requires-python = ">=3.11"
+license = "MIT"
+license-files = ["LICENSE"]
+keywords = ["matplotlib", "markdown", "rich text", "gridtext", "layout"]
+dependencies = [
+    "markdown>=3.4",
+    "matplotlib>=3.10",
+    "numpy",
+]
+
+[project.urls]
+Repository = "https://github.com/snake-case-ggtext/ggIR"
+
+[build-system]
+requires = ["uv_build>=0.12.2,<0.13.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.2.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
